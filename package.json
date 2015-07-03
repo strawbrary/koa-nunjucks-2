@@ -1,0 +1,28 @@
+{
+  "name": "koa-nunjucks-2",
+  "version": "1.0.2",
+  "description": "Thin wrapper over Nunjucks 2.0 for Koa",
+  "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
+  "dependencies": {
+    "copy-to": "^2.0.1",
+    "lodash": "~3.10.0",
+    "nunjucks": "mozilla/nunjucks"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/strawbrary/koa-nunjucks-2.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/strawbrary/koa-nunjucks-2/issues"
+  },
+  "keywords": [
+    "koa",
+    "nunjucks",
+    "view"
+  ],
+  "engine": {
+    "node": ">0.11"
+  }
+}
