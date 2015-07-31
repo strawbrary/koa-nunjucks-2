@@ -12,7 +12,7 @@ var path = require('path');
 app.context.render = koaNunjucks({
   autoescape: true,
   ext: 'html',
-  root: path.join(__dirname, 'views')
+  path: path.join(__dirname, 'views')
 });
 
 app.use(function*() {
@@ -42,7 +42,7 @@ The configuration function returns a [Nunjucks Environment](http://mozilla.githu
 app.context.render = koaNunjucks({
   autoescape: true,
   ext: 'html',
-  root: path.join(__dirname, 'views')
+  path: path.join(__dirname, 'views')
 });
 
 var nunjucksEnv = app.context.render.env;

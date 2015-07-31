@@ -1,6 +1,6 @@
 {
   "name": "koa-nunjucks-2",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Thin wrapper over Nunjucks 2.0 for Koa",
   "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
   "dependencies": {
