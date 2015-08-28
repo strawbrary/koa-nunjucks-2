@@ -1,12 +1,12 @@
 {
   "name": "koa-nunjucks-2",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Thin wrapper over Nunjucks 2.0 for Koa",
   "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
   "dependencies": {
     "copy-to": "^2.0.1",
-    "lodash": "~3.10.0",
-    "nunjucks": "mozilla/nunjucks"
+    "lodash": "^3.10.1",
+    "nunjucks": "^2.0.0"
   },
   "main": "index.js",
   "repository": {
