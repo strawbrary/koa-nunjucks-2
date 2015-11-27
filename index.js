@@ -49,7 +49,7 @@ exports = module.exports = function(opt_config) {
   copy(defaultSettings).to(config);
 
   config.path = path.resolve(process.cwd(), config.path);
-  config.ext = '.' + config.ext.replace(/^\./, '');
+  if(config.ext !== false) config.ext = '.' + config.ext.replace(/^\./, '');
 
   // Strip the package specific config options before passing to Nunjucks
   var nunjucksConfig = _.omit(config, packageConfigOptions);
@@ -66,7 +66,7 @@ exports = module.exports = function(opt_config) {
   var render = function*(view, opt_context, opt_callback) {
     var context = _.merge({}, this.state, opt_context);
 
-    view += config.ext;
+    if(config.ext !== false) view += config.ext;
 
     var html = env.render(view, context, opt_callback);
 
