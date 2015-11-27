@@ -49,7 +49,12 @@ exports = module.exports = function(opt_config) {
   copy(defaultSettings).to(config);
 
   config.path = path.resolve(process.cwd(), config.path);
-  config.ext = '.' + config.ext.replace(/^\./, '');
+
+  if (config.ext) {
+    config.ext = '.' + config.ext.replace(/^\./, '');
+  } else {
+    config.ext = '';
+  }
 
   // Strip the package specific config options before passing to Nunjucks
   var nunjucksConfig = _.omit(config, packageConfigOptions);

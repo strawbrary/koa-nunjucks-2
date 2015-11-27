@@ -37,6 +37,24 @@ describe('koa-nunjucks', function() {
       expect(config.ext).to.equal('.cake');
     });
 
+    it('should not add an extension when config.ext is falsy', function(done) {
+      var app = koa();
+
+      app.context.render = koaNunjucks({
+        ext: false,
+        path: path.join(__dirname, 'views')
+      });
+
+      app.use(function*() {
+        yield this.render('home.html');
+      });
+
+      request(app.listen())
+        .get('/')
+        .expect(/<body>Hello from Koa Nunjucks!<\/body>/)
+        .expect(200, done);
+    });
+
     it('should pass nunjucksConfig to Nunjucks', function(done) {
       var app = koa();
 
