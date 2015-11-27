@@ -1,5 +1,10 @@
 # koa-nunjucks-2
-Thin wrapper over [Nunjucks](http://mozilla.github.io/nunjucks/) 2.0 for [Koa](http://koajs.com/).
+Thin wrapper over [Nunjucks](https://mozilla.github.io/nunjucks/) 2 for [Koa](http://koajs.com/).
+
+[![NPM version][npm-img]][npm-url]
+[![Build status][travis-img]][travis-url]
+[![License][license-img]][license-url]
+[![Dependency status][david-img]][david-url]
 
 ## Usage
 ### Example
@@ -10,9 +15,11 @@ var koaNunjucks = require('koa-nunjucks-2');
 var path = require('path');
 
 app.context.render = koaNunjucks({
-  autoescape: true,
   ext: 'html',
-  path: path.join(__dirname, 'views')
+  path: path.join(__dirname, 'views'),
+  nunjucksConfig: {
+    autoescape: true
+  }
 });
 
 app.use(function*() {
@@ -21,55 +28,38 @@ app.use(function*() {
 ```
 
 ### Config Options
-* **autoescape** (boolean): Whether variables are automatically escaped in templates
-* **dev** (boolean): Determines if full stack traces from the origin of the error are shown
-* **ext** (string): Specifying an extension allows you to omit extensions in this.render calls
-* **lstripBlocks** (boolean): Whether to strip leading whitespace from blocks
-* **noCache** (boolean): Whether to disable template caching
-* **path** (string): Path to the templates
-* **throwOnUndefined** (boolean): Throw an error if a template variable is undefined
-* **trimBlocks** (boolean): Whether to trim first newline at end of blocks
-* **watch** (boolean): Reload templates when they are changed
-* **writeResp** (boolean): Whether to write the rendered output to response.body
+* **ext** *(default: 'html')*: Extension that will be automatically appended to the file name in `this.render` calls. Set to a falsy value to disable.
+* **path** *(default: current directory)*: Path to the templates.
+* **writeResponse** *(default: true)*: If true, writes the rendered output to `response.body`.
+* **nunjucksConfig**: Object of [Nunjucks config options](https://mozilla.github.io/nunjucks/api.html#configure).
 
 ### Global Template Variables
 Use [ctx.state](https://github.com/koajs/koa/blob/master/docs/api/context.md#ctxstate) to make a variable available in all templates.
 
 ### Extending Nunjucks
-The configuration function returns a [Nunjucks Environment](http://mozilla.github.io/nunjucks/api.html#environment) which allows you to define custom filters, extensions etc.
+The configuration function returns a [Nunjucks Environment](https://mozilla.github.io/nunjucks/api.html#environment) which allows you to define custom filters, extensions etc.
 
 ```js
 app.context.render = koaNunjucks({
-  autoescape: true,
   ext: 'html',
   path: path.join(__dirname, 'views')
 });
 
 var nunjucksEnv = app.context.render.env;
 nunjucksEnv.addFilter('shorten', function(str, count) {
-    return str.slice(0, count || 5);
+  return str.slice(0, count || 5);
 });
 ```
 
 ## License
-The MIT License (MIT)
+  [MIT][license-url]
 
-Copyright (c) 2015 strawbrary
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+[npm-img]: https://img.shields.io/npm/v/koa-nunjucks-2.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/koa-nunjucks-2
+[travis-img]: https://img.shields.io/travis/strawbrary/koa-nunjucks-2.svg?style=flat-square
+[travis-url]: https://travis-ci.org/strawbrary/koa-nunjucks-2
+[license-img]: https://img.shields.io/badge/license-MIT-green.svg?style=flat-square
+[license-url]: LICENSE
+[david-img]: https://img.shields.io/david/strawbrary/koa-nunjucks-2.svg?style=flat-square
+[david-url]: https://david-dm.org/strawbrary/koa-nunjucks-2
