@@ -14,7 +14,7 @@ describe('koa-nunjucks', function() {
       };
       koaNunjucks(config);
 
-      expect(config.writeResp).to.be.true;
+      expect(config.writeResponse).to.be.true;
     });
 
     it('should add a period to extension when missing', function() {
@@ -35,6 +35,16 @@ describe('koa-nunjucks', function() {
       koaNunjucks(config);
 
       expect(config.ext).to.equal('.cake');
+    });
+
+    it('should throw an error for unknown config options', function() {
+      var config = {
+        ext: '.cake',
+        path: path.join(__dirname, 'views'),
+        writeResp: true
+      };
+
+      expect(koaNunjucks.bind(null, config)).to.throw('Unknown config option: writeResp');
     });
 
     it('should not add an extension when config.ext is falsy', function(done) {
@@ -59,8 +69,10 @@ describe('koa-nunjucks', function() {
       var app = koa();
 
       app.context.render = koaNunjucks({
-        autoescape: false,
-        path: path.join(__dirname, 'views')
+        path: path.join(__dirname, 'views'),
+        nunjucksConfig: {
+          autoescape: false
+        }
       });
 
       app.use(function*() {
@@ -148,9 +160,9 @@ describe('koa-nunjucks', function() {
         .expect(200, done);
     });
 
-    it('should not write to response body when config.writeResp is false', function(done) {
+    it('should not write to response body when config.writeResponse is false', function(done) {
       app.context.render = koaNunjucks({
-        writeResp: false,
+        writeResponse: false,
         path: path.join(__dirname, 'views')
       });
 

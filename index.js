@@ -6,7 +6,6 @@
 'use strict';
 
 var _ = require('lodash');
-var copy = require('copy-to');
 var path = require('path');
 var nunjucks = require('nunjucks');
 
@@ -14,28 +13,11 @@ var nunjucks = require('nunjucks');
  * @type {Object}
  */
 const defaultSettings = {
-  autoescape: true,        // Whether variables are automatically escaped in templates
-  dev: false,              // Determines if full stack traces from the origin of the error are shown*
-  ext: 'html',             // Specifying an extension allows you to omit extensions in this.render calls
-  lstripBlocks: false,     // Whether to strip leading whitespace from blocks
-  noCache: false,          // Whether to disable template caching
-  path: '',                // Path to the templates
-  throwOnUndefined: false, // Throw an error if a template variable is undefined
-  trimBlocks: false,       // Whether to trim first newline at end of blocks
-  watch: true,             // Reload templates when they are changed
-  writeResp: true          // Whether to write the rendered output to response.body
+  ext: 'html',           // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
+  path: '',              // Path to the templates.
+  writeResponse: true,   // If true, writes the rendered output to response.body.
+  nunjucksConfig: {}     // Object of Nunjucks config options.
 };
-
-/**
- * Config options which belong to this package, not Nunjucks itself
- * @type {Array.<string>}
- * @const
- */
-const packageConfigOptions = [
-  'ext',
-  'path',
-  'writeResp'
-];
 
 /**
  * @param {Object=} opt_config
@@ -46,7 +28,15 @@ exports = module.exports = function(opt_config) {
     config = opt_config;
   }
 
-  copy(defaultSettings).to(config);
+  _.defaults(config, defaultSettings);
+
+  // Sanity check for unknown config options
+  var configKeysArr = Object.keys(config);
+  var knownConfigKeysArr = Object.keys(defaultSettings);
+  if (configKeysArr.length > knownConfigKeysArr.length) {
+    var unknownConfigKeys = _.difference(configKeysArr, knownConfigKeysArr);
+    throw new Error('Unknown config option: ' + unknownConfigKeys.join(', '));
+  }
 
   config.path = path.resolve(process.cwd(), config.path);
 
@@ -56,10 +46,7 @@ exports = module.exports = function(opt_config) {
     config.ext = '';
   }
 
-  // Strip the package specific config options before passing to Nunjucks
-  var nunjucksConfig = _.omit(config, packageConfigOptions);
-
-  var env = nunjucks.configure(config.path, nunjucksConfig);
+  var env = nunjucks.configure(config.path, config.nunjucksConfig);
 
   /**
    * Main function to be placed on app.context
@@ -75,7 +62,7 @@ exports = module.exports = function(opt_config) {
 
     var html = env.render(view, context, opt_callback);
 
-    if (config.writeResp) {
+    if (config.writeResponse) {
       this.type = 'html';
       this.body = html;
     }

@@ -7,7 +7,6 @@
     "test": "mocha test"
   },
   "dependencies": {
-    "copy-to": "^2.0.1",
     "lodash": "^3.10.1",
     "nunjucks": "^2.1.0"
   },
