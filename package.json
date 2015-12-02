@@ -7,8 +7,10 @@
     "test": "mocha test"
   },
   "dependencies": {
-    "lodash": "^3.10.1",
-    "nunjucks": "^2.1.0"
+    "lodash.defaults": "^3.1.2",
+    "lodash.difference": "^3.2.2",
+    "lodash.merge": "^3.3.2",
+    "nunjucks": "^2.2.0"
   },
   "devDependencies": {
     "chai": "^3.4.1",

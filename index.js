@@ -5,7 +5,9 @@
  */
 'use strict';
 
-var _ = require('lodash');
+var defaults = require('lodash.defaults');
+var difference = require('lodash.difference');
+var merge = require('lodash.merge');
 var path = require('path');
 var nunjucks = require('nunjucks');
 
@@ -28,13 +30,13 @@ exports = module.exports = function(opt_config) {
     config = opt_config;
   }
 
-  _.defaults(config, defaultSettings);
+  defaults(config, defaultSettings);
 
   // Sanity check for unknown config options
   var configKeysArr = Object.keys(config);
   var knownConfigKeysArr = Object.keys(defaultSettings);
   if (configKeysArr.length > knownConfigKeysArr.length) {
-    var unknownConfigKeys = _.difference(configKeysArr, knownConfigKeysArr);
+    var unknownConfigKeys = difference(configKeysArr, knownConfigKeysArr);
     throw new Error('Unknown config option: ' + unknownConfigKeys.join(', '));
   }
 
@@ -56,7 +58,7 @@ exports = module.exports = function(opt_config) {
    * @returns {string}
    */
   var render = function*(view, opt_context, opt_callback) {
-    var context = _.merge({}, this.state, opt_context);
+    var context = merge({}, this.state, opt_context);
 
     view += config.ext;
 
