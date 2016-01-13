@@ -19,6 +19,9 @@
     "supertest": "^1.1.0"
   },
   "main": "index.js",
+  "files": [
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/strawbrary/koa-nunjucks-2.git"
