@@ -7,9 +7,9 @@
     "test": "mocha test"
   },
   "dependencies": {
-    "lodash.defaults": "^3.1.2",
-    "lodash.difference": "^3.2.2",
-    "lodash.merge": "^3.3.2",
+    "lodash.defaults": "^4.0.0",
+    "lodash.difference": "^4.0.1",
+    "lodash.merge": "^4.0.1",
     "nunjucks": "^2.2.0"
   },
   "devDependencies": {
