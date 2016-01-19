@@ -1,15 +1,15 @@
-'use strict';
+require('babel-polyfill');
 
-var koa = require('koa');
-var koaNunjucks = require('..');
-var path = require('path');
-var request = require('supertest');
-var expect = require('chai').expect;
+const Koa = require('koa');
+const koaNunjucks = require('..');
+const path = require('path');
+const request = require('supertest');
+const expect = require('chai').expect;
 
-describe('koa-nunjucks', function() {
+describe('koa-nunjucks on koa v2', function() {
   describe('config', function() {
     it('should fill unspecified config options with defaults', function() {
-      var config = {
+      const config = {
         path: path.join(__dirname, 'views')
       };
       koaNunjucks(config);
@@ -18,7 +18,7 @@ describe('koa-nunjucks', function() {
     });
 
     it('should add a period to extension when missing', function() {
-      var config = {
+      const config = {
         ext: 'strawbrary',
         path: path.join(__dirname, 'views')
       };
@@ -28,7 +28,7 @@ describe('koa-nunjucks', function() {
     });
 
     it('should not add a period when already specified', function() {
-      var config = {
+      const config = {
         ext: '.cake',
         path: path.join(__dirname, 'views')
       };
@@ -38,7 +38,7 @@ describe('koa-nunjucks', function() {
     });
 
     it('should throw an error for unknown config options', function() {
-      var config = {
+      const config = {
         ext: '.cake',
         path: path.join(__dirname, 'views'),
         writeResp: true
@@ -47,16 +47,33 @@ describe('koa-nunjucks', function() {
       expect(koaNunjucks.bind(null, config)).to.throw('Unknown config option: writeResp');
     });
 
-    it('should not add an extension when config.ext is falsy', function(done) {
-      var app = koa();
+    it('should allow render method to have a custom name', function(done) {
+      const app = new Koa();
 
-      app.context.render = koaNunjucks({
-        ext: false,
+      app.use(koaNunjucks({
+        functionName: 'renderNunjucks',
         path: path.join(__dirname, 'views')
+      }));
+
+      app.use(async (ctx) => {
+        await ctx.renderNunjucks('home');
       });
 
-      app.use(function*() {
-        yield this.render('home.html');
+      request(app.listen())
+        .get('/')
+        .expect(200, done)
+    });
+
+    it('should not add an extension when config.ext is falsy', function(done) {
+      const app = new Koa();
+
+      app.use(koaNunjucks({
+        ext: false,
+        path: path.join(__dirname, 'views')
+      }));
+
+      app.use(async (ctx) => {
+        await ctx.render('home.html');
       });
 
       request(app.listen())
@@ -66,17 +83,17 @@ describe('koa-nunjucks', function() {
     });
 
     it('should pass nunjucksConfig to Nunjucks', function(done) {
-      var app = koa();
+      const app = new Koa();
 
-      app.context.render = koaNunjucks({
+      app.use(koaNunjucks({
         path: path.join(__dirname, 'views'),
         nunjucksConfig: {
           autoescape: false
         }
-      });
+      }));
 
-      app.use(function*() {
-        yield this.render('context', {
+      app.use(async (ctx) => {
+        await ctx.render('context', {
           park: '<b>Sweet escape</b>'
         });
       });
@@ -88,20 +105,81 @@ describe('koa-nunjucks', function() {
     });
   });
 
-  describe('render', function() {
-    var app;
+  describe('middleware', function() {
+    let app;
 
     beforeEach(function() {
-      app = koa();
+      app = new Koa();
+    });
+
+    it('should throw an error when default render method is already defined', function(done) {
+      app.use(async (ctx, next) => {
+        try {
+          await next();
+        } catch (err) {
+          expect(err.toString()).to.equal('Error: ctx.render is already defined');
+          done();
+        }
+      });
+
+      app.use(async (ctx, next) => {
+        ctx.render = async () => {};
+
+        await next();
+      });
+
+      app.use(koaNunjucks({
+        ext: false,
+        path: path.join(__dirname, 'views')
+      }));
+
+      request(app.listen())
+        .get('/')
+        .end(() => {});
+    });
+
+    it('should throw an error when custom render method is already defined', function(done) {
+      app.use(async (ctx, next) => {
+        try {
+          await next();
+        } catch (err) {
+          expect(err.toString()).to.equal('Error: ctx.renderNunjucks2 is already defined');
+          done();
+        }
+      });
+
+      app.use(async (ctx, next) => {
+        ctx.renderNunjucks2 = async () => {};
+
+        await next();
+      });
+
+      app.use(koaNunjucks({
+        ext: false,
+        functionName: 'renderNunjucks2',
+        path: path.join(__dirname, 'views')
+      }));
+
+      request(app.listen())
+        .get('/')
+        .end(() => {});
+    });
+  });
+
+  describe('render', function() {
+    let app;
+
+    beforeEach(function() {
+      app = new Koa();
     });
 
     it('should pass context variables to template', function(done) {
-      app.context.render = koaNunjucks({
+      app.use(koaNunjucks({
         path: path.join(__dirname, 'views')
-      });
+      }));
 
-      app.use(function*() {
-        yield this.render('context', {
+      app.use(async (ctx) => {
+        await ctx.render('context', {
           park: 'Local'
         });
       });
@@ -115,18 +193,18 @@ describe('koa-nunjucks', function() {
     });
 
     it('should pass global variables from ctx.state', function(done) {
-      app.context.render = koaNunjucks({
+      app.use(koaNunjucks({
         path: path.join(__dirname, 'views')
+      }));
+
+      app.use(async (ctx, next) => {
+        ctx.state.park = 'Global';
+
+        await next();
       });
 
-      app.use(function*(next) {
-        this.state.park = 'Global';
-
-        yield next;
-      });
-
-      app.use(function*() {
-        yield this.render('context');
+      app.use(async (ctx) => {
+        await ctx.render('context');
       });
 
       request(app.listen())
@@ -137,18 +215,18 @@ describe('koa-nunjucks', function() {
     });
 
     it('should override ctx.state with local context', function(done) {
-      app.context.render = koaNunjucks({
+      app.use(koaNunjucks({
         path: path.join(__dirname, 'views')
+      }));
+
+      app.use(async (ctx, next) => {
+        ctx.state.park = 'Global';
+
+        await next();
       });
 
-      app.use(function*(next) {
-        this.state.park = 'Global';
-
-        yield next;
-      });
-
-      app.use(function*() {
-        yield this.render('context', {
+      app.use(async (ctx) => {
+        await ctx.render('context', {
           park: 'Local override'
         });
       });
@@ -161,13 +239,13 @@ describe('koa-nunjucks', function() {
     });
 
     it('should not write to response body when config.writeResponse is false', function(done) {
-      app.context.render = koaNunjucks({
+      app.use(koaNunjucks({
         writeResponse: false,
         path: path.join(__dirname, 'views')
-      });
+      }));
 
-      app.use(function*() {
-        yield this.render('home');
+      app.use(async (ctx) => {
+        await ctx.render('home');
       });
 
       request(app.listen())
@@ -175,44 +253,26 @@ describe('koa-nunjucks', function() {
         .expect('Not Found')
         .expect(404, done);
     });
-
-    it('should call the callback if specified', function(done) {
-      app.context.render = koaNunjucks({
-        path: path.join(__dirname, 'views')
-      });
-
-      app.use(function*() {
-        yield this.render('home', {}, function(err, res) {
-          expect(err).to.be.null;
-          expect(res).to.match(/<body>Hello from Koa Nunjucks!<\/body>/);
-          done();
-        });
-      });
-
-      request(app.listen())
-        .get('/')
-        .end(function() {});
-    });
   });
 
   describe('filters', function() {
-    var app = koa();
+    const app = new Koa();
 
-    app.context.render = koaNunjucks({
+    app.use(koaNunjucks({
       ext: 'html',
-      path: path.join(__dirname, 'views')
-    });
+      path: path.join(__dirname, 'views'),
+      configureEnvironment: (env) => {
+        env.addFilter('shorten', function(str, count) {
+          return str.slice(0, count || 5);
+        });
+      }
+    }));
 
-    app.use(function*() {
-      yield this.render('filter', {
+    app.use(async (ctx) => {
+      await ctx.render('filter', {
         sentence: 'Hello from a filter!',
         length: 12
       });
-    });
-
-    var nunjucksEnv = app.context.render.env;
-    nunjucksEnv.addFilter('shorten', function(str, count) {
-      return str.slice(0, count || 5);
     });
 
     it('should allow filters to be defined', function(done) {

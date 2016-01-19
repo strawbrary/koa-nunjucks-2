@@ -1,10 +1,11 @@
 /*!
  * koa-nunjucks-2
- * Copyright (c) 2015 strawbrary
+ * Copyright (c) 2016 strawbrary
  * MIT Licensed
  */
 'use strict';
 
+var bluebird = require('bluebird');
 var defaults = require('lodash.defaults');
 var difference = require('lodash.difference');
 var merge = require('lodash.merge');
@@ -15,10 +16,12 @@ var nunjucks = require('nunjucks');
  * @type {Object}
  */
 const defaultSettings = {
-  ext: 'html',           // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
-  path: '',              // Path to the templates.
-  writeResponse: true,   // If true, writes the rendered output to response.body.
-  nunjucksConfig: {}     // Object of Nunjucks config options.
+  ext: 'html',               // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
+  path: '',                  // Path to the templates.
+  writeResponse: true,       // If true, writes the rendered output to response.body.
+  functionName: 'render',    // The name of the function that will be called to render the template
+  nunjucksConfig: {},        // Object of Nunjucks config options.
+  configureEnvironment: null // Function to further modify the Nunjucks environment
 };
 
 /**
@@ -49,31 +52,36 @@ exports = module.exports = function(opt_config) {
   }
 
   var env = nunjucks.configure(config.path, config.nunjucksConfig);
+  env.renderAsync = bluebird.promisify(env.render);
 
-  /**
-   * Main function to be placed on app.context
-   * @param {string} view
-   * @param {Object=} opt_context
-   * @param {Function=} opt_callback
-   * @returns {string}
-   */
-  var render = function*(view, opt_context, opt_callback) {
-    var context = merge({}, this.state, opt_context);
+  if (typeof config.configureEnvironment === 'function') {
+    config.configureEnvironment(env);
+  }
 
-    view += config.ext;
-
-    var html = env.render(view, context, opt_callback);
-
-    if (config.writeResponse) {
-      this.type = 'html';
-      this.body = html;
+  return async (ctx, next) => {
+    if (ctx[config.functionName]) {
+      throw new Error(`ctx.${config.functionName} is already defined`);
     }
 
-    return html;
-  };
+    /**
+     * @param {string} view
+     * @param {Object=} opt_context
+     * @returns {string}
+     */
+    ctx[config.functionName] = async (view, opt_context) => {
+      var context = merge({}, ctx.state, opt_context);
 
-  // Expose the Nunjucks Environment
-  render.env = env;
+      view += config.ext;
 
-  return render;
+      return env.renderAsync(view, context)
+        .then(html => {
+          if (config.writeResponse) {
+            ctx.type = 'html';
+            ctx.body = html;
+          }
+        });
+    };
+
+    await next();
+  }
 };
