@@ -18,46 +18,49 @@ npm install --save koa-nunjucks-2@next
 ## Usage
 ### Example
 ```js
-var koa = require('koa');
-var app = koa();
+var Koa = require('koa');
+var app = new Koa();
 var koaNunjucks = require('koa-nunjucks-2');
 var path = require('path');
 
-app.context.render = koaNunjucks({
+app.use(koaNunjucks({
   ext: 'html',
   path: path.join(__dirname, 'views'),
   nunjucksConfig: {
     autoescape: true
   }
-});
+}));
 
-app.use(function*() {
-  yield this.render('home', {double: 'rainbow'});
+app.use(async (ctx) => {
+  await ctx.render('home', {double: 'rainbow'});
 });
 ```
 
 ### Config Options
-* **ext** *(default: 'html')*: Extension that will be automatically appended to the file name in `this.render` calls. Set to a falsy value to disable.
+* **ext** *(default: 'html')*: Extension that will be automatically appended to the file name in `ctx.render` calls. Set to a falsy value to disable.
 * **path** *(default: current directory)*: Path to the templates.
 * **writeResponse** *(default: true)*: If true, writes the rendered output to `response.body`.
+* **functionName** *(default: 'render')*: The name of the function that will be called to render the template.
 * **nunjucksConfig**: Object of [Nunjucks config options](https://mozilla.github.io/nunjucks/api.html#configure).
+* **configureEnvironment**: A function to modify the Nunjucks environment. See the [Extending Nunjucks](#Extending Nunjucks) section below for usage.
 
 ### Global Template Variables
 Use [ctx.state](https://github.com/koajs/koa/blob/master/docs/api/context.md#ctxstate) to make a variable available in all templates.
 
 ### Extending Nunjucks
-The configuration function returns a [Nunjucks Environment](https://mozilla.github.io/nunjucks/api.html#environment) which allows you to define custom filters, extensions etc.
+Use the `configureEnvironment` config option to define a function which will receive a [Nunjucks Environment](https://mozilla.github.io/nunjucks/api.html#environment) as its argument. This allows you to define custom filters, extensions etc.
 
 ```js
-app.context.render = koaNunjucks({
+app.use(koaNunjucks({
   ext: 'html',
-  path: path.join(__dirname, 'views')
-});
+  path: path.join(__dirname, 'views'),
+  configureEnvironment: (env) => {
+    env.addFilter('shorten', function(str, count) {
+      return str.slice(0, count || 5);
+    });
+  }
+}));
 
-var nunjucksEnv = app.context.render.env;
-nunjucksEnv.addFilter('shorten', function(str, count) {
-  return str.slice(0, count || 5);
-});
 ```
 
 ## License
