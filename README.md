@@ -6,6 +6,15 @@ Thin wrapper over [Nunjucks](https://mozilla.github.io/nunjucks/) 2 for [Koa](ht
 [![License][license-img]][license-url]
 [![Dependency status][david-img]][david-url]
 
+## Installation
+```
+npm install --save koa-nunjucks-2
+```
+For Koa 2, use the next tag
+```
+npm install --save koa-nunjucks-2@next
+```
+
 ## Usage
 ### Example
 ```js
