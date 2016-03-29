@@ -19,12 +19,12 @@ describe('koa-nunjucks on koa v2', function() {
 
     it('should add a period to extension when missing', function() {
       const config = {
-        ext: 'strawbrary',
+        ext: 'html',
         path: path.join(__dirname, 'views')
       };
       koaNunjucks(config);
 
-      expect(config.ext).to.equal('.strawbrary');
+      expect(config.ext).to.equal('.html');
     });
 
     it('should not add a period when already specified', function() {
@@ -73,7 +73,7 @@ describe('koa-nunjucks on koa v2', function() {
       }));
 
       app.use(async (ctx) => {
-        await ctx.render('home.html');
+        await ctx.render('home.njk');
       });
 
       request(app.listen())
@@ -259,7 +259,6 @@ describe('koa-nunjucks on koa v2', function() {
     const app = new Koa();
 
     app.use(koaNunjucks({
-      ext: 'html',
       path: path.join(__dirname, 'views'),
       configureEnvironment: (env) => {
         env.addFilter('shorten', function(str, count) {

@@ -16,7 +16,7 @@ var nunjucks = require('nunjucks');
  * @type {Object}
  */
 const defaultSettings = {
-  ext: 'html',               // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
+  ext: 'njk',                // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
   path: '',                  // Path to the templates.
   writeResponse: true,       // If true, writes the rendered output to response.body.
   functionName: 'render',    // The name of the function that will be called to render the template

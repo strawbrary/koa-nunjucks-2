@@ -37,7 +37,8 @@ app.use(async (ctx) => {
 ```
 
 ### Config Options
-* **ext** *(default: 'html')*: Extension that will be automatically appended to the file name in `ctx.render` calls. Set to a falsy value to disable.
+* **ext** *(default: 'njk')*: Extension that will be automatically appended to the file name in `ctx.render` calls. Set
+ to a falsy value to disable.
 * **path** *(default: current directory)*: Path to the templates.
 * **writeResponse** *(default: true)*: If true, writes the rendered output to `response.body`.
 * **functionName** *(default: 'render')*: The name of the function that will be called to render the template.
