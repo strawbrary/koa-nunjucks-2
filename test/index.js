@@ -86,7 +86,37 @@ describe('koa-nunjucks', function() {
         .expect(/<b>Sweet escape<\/b>/)
         .expect(200, done);
     });
+
   });
+
+  describe('path', function () {
+    var app = koa();
+
+    app.context.render = koaNunjucks({
+      path: [ path.join(__dirname, 'views'), path.join(__dirname, 'views/other') ],
+      nunjucksConfig: {
+        autoescape: false
+      }
+    });
+    app.use(function*() {
+      if (this.url == '/other') yield this.render('multipath');
+      if (this.url == '/') yield this.render('path');
+    });
+    describe('path as array', function () {
+      it('should pass for the first path of the paths array', function (done) {
+        request(app.listen())
+            .get('/other')
+            .expect(/<h1>Hi i'm supporting multipath<\/h1>/)
+            .expect(200, done);
+      })
+      it('should pass for the second path of the paths array', function (done) {
+        request(app.listen())
+            .get('/')
+            .expect(/<h1>i'm multi path too<\/h1>/)
+            .expect(200, done);
+      })
+    })
+  })
 
   describe('render', function() {
     var app;
