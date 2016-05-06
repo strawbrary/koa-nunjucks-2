@@ -36,7 +36,11 @@ exports = module.exports = (config = {}) => {
     throw new Error(`Unknown config option: ${unknownConfigKeys.join(', ')}`);
   }
 
-  config.path = path.resolve(process.cwd(), config.path);
+  if (Array.isArray(config.path)) {
+    config.path = config.path.map(item => path.resolve(process.cwd(), item));
+  } else {
+    config.path = path.resolve(process.cwd(), config.path);
+  }
 
   if (config.ext) {
     config.ext = `.${config.ext.replace(/^\./, '')}`;
