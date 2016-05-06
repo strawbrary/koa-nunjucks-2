@@ -41,9 +41,7 @@ exports = module.exports = function(opt_config) {
   }
 
   if (Array.isArray(config.path)) {
-    config.path = config.path.map(function (item) {
-      return path.resolve(process.cwd(), item)
-    })
+    config.path = config.path.map(item => path.resolve(process.cwd(), item));
   }
   else config.path = path.resolve(process.cwd(), config.path);
 
