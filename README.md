@@ -1,5 +1,5 @@
 # koa-nunjucks-2
-Thin wrapper over [Nunjucks](https://mozilla.github.io/nunjucks/) 2 for [Koa](http://koajs.com/).
+Lightweight [Koa](http://koajs.com/) middleware for [Nunjucks](https://mozilla.github.io/nunjucks/).
 
 [![NPM version][npm-img]][npm-url]
 [![Build status][travis-img]][travis-url]
@@ -37,9 +37,8 @@ app.use(async (ctx) => {
 ```
 
 ### Config Options
-* **ext** *(default: 'njk')*: Extension that will be automatically appended to the file name in `ctx.render` calls. Set
- to a falsy value to disable.
-* **path** *(default: current directory)*: Path to the templates.
+* **ext** *(default: 'njk')*: Extension that will be automatically appended to the file name in `ctx.render` calls. Set to a falsy value to disable.
+* **path** *(default: current directory)*: Path to the templates. Also supports passing an array of paths.
 * **writeResponse** *(default: true)*: If true, writes the rendered output to `response.body`.
 * **functionName** *(default: 'render')*: The name of the function that will be called to render the template.
 * **nunjucksConfig**: Object of [Nunjucks config options](https://mozilla.github.io/nunjucks/api.html#configure).
