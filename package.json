@@ -1,7 +1,7 @@
 {
   "name": "koa-nunjucks-2",
-  "version": "3.0.0-alpha.2",
-  "description": "Thin wrapper over Nunjucks 2 for Koa",
+  "version": "3.0.0-alpha.3",
+  "description": "Lightweight Koa middleware for Nunjucks",
   "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
   "scripts": {
     "build": "NODE_ENV=production babel index.js --out-file compiled.js",
