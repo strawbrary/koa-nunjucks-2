@@ -1,13 +1,13 @@
 {
   "name": "koa-nunjucks-2",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "description": "Lightweight Koa middleware for Nunjucks",
   "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
   "scripts": {
     "build": "NODE_ENV=production babel index.js --out-file compiled.js",
     "lint": "eslint -c .eslintrc index.js test/index.js",
     "prepublish": "npm run build",
-    "test": "mocha test --require babel-core/register"
+    "test": "npm run build && mocha test --require babel-core/register"
   },
   "dependencies": {
     "babel-runtime": "^6.9.2",
@@ -50,6 +50,9 @@
     "nunjucks",
     "view"
   ],
+  "publishConfig": {
+    "tag": "next"
+  },
   "engine": {
     "node": ">0.11"
   }
