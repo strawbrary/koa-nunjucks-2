@@ -1,10 +1,9 @@
 /* eslint-disable func-names, prefer-arrow-callback */
-require('babel-polyfill');
 
 const chai = require('chai');
 chai.use(require('dirty-chai'));
 const Koa = require('koa');
-const koaNunjucks = require('..');
+const koaNunjucks = require('../compiled');
 const path = require('path');
 const request = require('supertest');
 const expect = chai.expect;
