@@ -26,7 +26,7 @@ const defaultSettings = {
  */
 exports = module.exports = function(opt_config) {
   var config = {};
-  if (config) {
+  if (opt_config) {
     config = opt_config;
   }
 
