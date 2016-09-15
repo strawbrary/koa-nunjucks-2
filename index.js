@@ -15,10 +15,11 @@ var nunjucks = require('nunjucks');
  * @type {Object}
  */
 const defaultSettings = {
-  ext: 'html',           // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
-  path: '',              // Path to the templates.
-  writeResponse: true,   // If true, writes the rendered output to response.body.
-  nunjucksConfig: {}     // Object of Nunjucks config options.
+  ext: 'html',                   // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
+  path: '',                      // Path to the templates.
+  recursiveMergeVariables: true, // Whether to recursively merge and deep copy global template variables with locals
+  writeResponse: true,           // If true, writes the rendered output to response.body.
+  nunjucksConfig: {}             // Object of Nunjucks config options.
 };
 
 /**
@@ -61,7 +62,12 @@ exports = module.exports = function(opt_config) {
    * @returns {string}
    */
   var render = function*(view, opt_context, opt_callback) {
-    var context = merge({}, this.state, opt_context);
+    var context;
+    if (config.recursiveMergeVariables) {
+      context = merge({}, this.state, opt_context);
+    } else {
+      context = Object.assign({}, this.state, opt_context);
+    }
 
     view += config.ext;
 

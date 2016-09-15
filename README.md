@@ -39,6 +39,7 @@ app.use(function*() {
 ### Config Options
 * **ext** *(default: 'html')*: Extension that will be automatically appended to the file name in `this.render` calls. Set to a falsy value to disable.
 * **path** *(default: current directory)*: Path to the templates. Also supports passing an array of paths.
+* **recursiveMergeVariables** *(default: true)*: Whether to recursively merge and deep copy global template variables with locals
 * **writeResponse** *(default: true)*: If true, writes the rendered output to `response.body`.
 * **nunjucksConfig**: Object of [Nunjucks config options](https://mozilla.github.io/nunjucks/api.html#configure).
 

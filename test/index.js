@@ -87,6 +87,54 @@ describe('koa-nunjucks', function() {
         .expect(200, done);
     });
 
+    it('should recursively merge template variables by default', function(done) {
+      var app = koa();
+
+      app.context.render = koaNunjucks({
+        path: path.join(__dirname, 'views')
+      });
+
+      app.use(function*(next) {
+        this.state.park = {tree: 'pine'};
+
+        yield next;
+      });
+
+      app.use(function*() {
+        yield this.render('merge', {park: {bench: 'cone'}});
+      });
+
+      request(app.listen())
+        .get('/')
+        .expect('content-type', 'text/html; charset=utf-8')
+        .expect(/<body>pine ~ cone<\/body>/)
+        .expect(200, done);
+    });
+
+    it('should not merge when recursiveMergeVariables is false', function(done) {
+      var app = koa();
+
+      app.context.render = koaNunjucks({
+        path: path.join(__dirname, 'views'),
+        recursiveMergeVariables: false
+      });
+
+      app.use(function*(next) {
+        this.state.park = {tree: 'pine'};
+
+        yield next;
+      });
+
+      app.use(function*() {
+        yield this.render('merge', {park: {bench: 'cone'}});
+      });
+
+      request(app.listen())
+        .get('/')
+        .expect('content-type', 'text/html; charset=utf-8')
+        .expect(/<body> ~ cone<\/body>/)
+        .expect(200, done);
+    });
   });
 
   describe('path', function () {
@@ -108,7 +156,7 @@ describe('koa-nunjucks', function() {
             .get('/other')
             .expect(/<h1>Hi i'm supporting multipath<\/h1>/)
             .expect(200, done);
-      })
+      });
       it('should pass for the second path of the paths array', function (done) {
         request(app.listen())
             .get('/')
@@ -116,7 +164,7 @@ describe('koa-nunjucks', function() {
             .expect(200, done);
       })
     })
-  })
+  });
 
   describe('render', function() {
     var app;
