@@ -1,6 +1,6 @@
 {
   "name": "koa-nunjucks-2",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "Lightweight Koa middleware for Nunjucks",
   "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
   "scripts": {
