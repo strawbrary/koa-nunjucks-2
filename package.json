@@ -15,7 +15,7 @@
     "lodash.defaults": "^4.0.0",
     "lodash.difference": "^4.0.1",
     "lodash.merge": "^4.0.1",
-    "nunjucks": "^2.3.0"
+    "nunjucks": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
