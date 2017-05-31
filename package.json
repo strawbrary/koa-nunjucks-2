@@ -1,6 +1,6 @@
 {
   "name": "koa-nunjucks-2",
-  "version": "3.0.0-alpha.5",
+  "version": "3.0.0",
   "description": "Lightweight Koa middleware for Nunjucks",
   "homepage": "https://github.com/strawbrary/koa-nunjucks-2",
   "scripts": {
@@ -50,9 +50,6 @@
     "nunjucks",
     "view"
   ],
-  "publishConfig": {
-    "tag": "next"
-  },
   "engine": {
     "node": ">0.11"
   }
