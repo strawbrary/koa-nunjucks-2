@@ -6,6 +6,7 @@ const Koa = require('koa');
 const koaNunjucks = require('../compiled');
 const path = require('path');
 const request = require('supertest');
+
 const expect = chai.expect;
 
 describe('koa-nunjucks on koa v2', function () {

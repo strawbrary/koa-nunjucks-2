@@ -1,6 +1,6 @@
 /*!
  * koa-nunjucks-2
- * Copyright (c) 2016 strawbrary
+ * Copyright (c) 2017 strawbrary
  * MIT Licensed
  */
 const bluebird = require('bluebird');
@@ -11,7 +11,7 @@ const path = require('path');
 const nunjucks = require('nunjucks');
 
 /**
- * @type {Object}
+ * @type {!Object}
  */
 const defaultSettings = {
   ext: 'njk',                 // Extension that will be automatically appended to the file name in this.render calls. Set to a falsy value to disable.
@@ -23,9 +23,9 @@ const defaultSettings = {
 };
 
 /**
- * @param {Object=} config
+ * @param {!Object=} config
  */
-exports = module.exports = (config = {}) => {
+module.exports = (config = {}) => {
   defaults(config, defaultSettings);
 
   // Sanity check for unknown config options
@@ -62,7 +62,7 @@ exports = module.exports = (config = {}) => {
 
     /**
      * @param {string} view
-     * @param {Object=} context
+     * @param {!Object=} context
      * @returns {string}
      */
     ctx[config.functionName] = async (view, context) => {
@@ -71,7 +71,7 @@ exports = module.exports = (config = {}) => {
       view += config.ext;
 
       return env.renderAsync(view, mergedContext)
-        .then(html => {
+        .then((html) => {
           if (config.writeResponse) {
             ctx.type = 'html';
             ctx.body = html;
