@@ -10,10 +10,7 @@ Lightweight [Koa](http://koajs.com/) middleware for [Nunjucks](https://mozilla.g
 ```
 npm install --save koa-nunjucks-2
 ```
-For Koa 2, use the next tag
-```
-npm install --save koa-nunjucks-2@next
-```
+NOTE: v3 requires Koa 2 or later. If you're using Koa 1, use v2 of this package.
 
 ## Usage
 ### Example
