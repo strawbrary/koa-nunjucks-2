@@ -15,16 +15,16 @@ NOTE: v3 requires Koa 2 or later. If you're using Koa 1, use v2 of this package.
 ## Usage
 ### Example
 ```js
-var Koa = require('koa');
-var app = new Koa();
-var koaNunjucks = require('koa-nunjucks-2');
-var path = require('path');
+const Koa = require('koa');
+const app = new Koa();
+const koaNunjucks = require('koa-nunjucks-2');
+const path = require('path');
 
 app.use(koaNunjucks({
   ext: 'html',
   path: path.join(__dirname, 'views'),
   nunjucksConfig: {
-    autoescape: true
+    trimBlocks: true
   }
 }));
 
@@ -52,7 +52,7 @@ app.use(koaNunjucks({
   ext: 'html',
   path: path.join(__dirname, 'views'),
   configureEnvironment: (env) => {
-    env.addFilter('shorten', function(str, count) {
+    env.addFilter('shorten', (str, count) => {
       return str.slice(0, count || 5);
     });
   }
